@@ -1,0 +1,28 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AreaType {
+  id: ID!
+  nombre: String!
+}
+
+input CreateAreaInput {
+  nombre: String!
+}
+
+type Mutation {
+  actualizarArea(data: UpdateAreaInput!, id: String!): AreaType!
+  crearArea(data: CreateAreaInput!): AreaType!
+  eliminarArea(id: String!): Boolean!
+}
+
+type Query {
+  area(id: String!): AreaType!
+  areaByName(name: String!): AreaType!
+  areas: [AreaType!]!
+}
+
+input UpdateAreaInput {
+  nombre: String!
+}

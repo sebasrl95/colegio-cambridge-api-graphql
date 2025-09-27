@@ -8,7 +8,7 @@ import { CreateOficinaDto } from './dto/create-oficina.dto';
 import { Oficina } from 'src/entities/oficina.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateSalonDto } from 'src/salon/dto/update-salon.dto';
+import { UpdateSalonDto } from 'src/app/salon/dto/update-salon.dto';
 import { Area } from 'src/entities/area.schema';
 
 @Injectable()

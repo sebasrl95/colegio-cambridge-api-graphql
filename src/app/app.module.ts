@@ -7,7 +7,10 @@ import { EmpleadoModule } from './empleado/empleado.module';
 import { OficinaModule } from './oficina/oficina.module';
 import { SalonModule } from './salon/salon.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { mongoConfig } from './config/mongo.config';
+import { mongoConfig } from '../config/mongo.config';
+import { join } from 'path';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -17,6 +20,12 @@ import { mongoConfig } from './config/mongo.config';
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: mongoConfig,
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
+      playground: true,
+      sortSchema: true,
     }),
     AreaModule,
     EmpleadoModule,
