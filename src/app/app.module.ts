@@ -25,7 +25,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gql'),
       playground: true,
-      sortSchema: true,
     }),
     AreaModule,
     EmpleadoModule,

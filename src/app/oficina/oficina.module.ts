@@ -4,6 +4,7 @@ import { OficinaController } from './oficina.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Oficina, OficinaSchema } from 'src/entities/oficina.schema';
 import { Area, AreaSchema } from 'src/entities/area.schema';
+import { OficinaResolver } from './oficina.resolver';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { Area, AreaSchema } from 'src/entities/area.schema';
     ]),
   ],
   controllers: [OficinaController],
-  providers: [OficinaService],
+  providers: [OficinaService, OficinaResolver],
+  exports: [OficinaResolver],
 })
 export class OficinaModule {}

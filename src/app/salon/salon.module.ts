@@ -4,6 +4,7 @@ import { SalonController } from './salon.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Salon, SalonSchema } from 'src/entities/salon.schema';
 import { Area, AreaSchema } from 'src/entities/area.schema';
+import { SalonResolver } from './salon.resolver';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { Area, AreaSchema } from 'src/entities/area.schema';
     ]),
   ],
   controllers: [SalonController],
-  providers: [SalonService],
+  providers: [SalonService, SalonResolver],
 })
 export class SalonModule {}

@@ -1,6 +1,6 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { AreaService } from './area.service';
-import { AreaType } from './models/area.model';
+import { AreaType } from './model/area.model';
 import { CreateAreaInput } from './dto/create-area.input';
 import { UpdateAreaInput } from './dto/update-area.input';
 
@@ -14,7 +14,7 @@ export class AreaResolver {
   }
 
   @Query(() => AreaType)
-  async area(@Args('id') id: string) {
+  async area(@Args('id', { type: () => ID }) id: string) {
     return this.areaService.findOne(id);
   }
 
@@ -24,20 +24,20 @@ export class AreaResolver {
   }
 
   @Mutation(() => AreaType)
-  async crearArea(@Args('data') data: CreateAreaInput) {
-    return this.areaService.create(data);
+  async crearArea(@Args('createAreaInput') createAreaInput: CreateAreaInput) {
+    return this.areaService.create(createAreaInput);
   }
 
   @Mutation(() => AreaType)
   async actualizarArea(
-    @Args('id') id: string,
-    @Args('data') data: UpdateAreaInput,
+    @Args('id', { type: () => ID }) id: string,
+    @Args('updateAreaInput') updateAreaInput: UpdateAreaInput,
   ) {
-    return this.areaService.update(id, data);
+    return this.areaService.update(id, updateAreaInput);
   }
 
   @Mutation(() => Boolean)
-  async eliminarArea(@Args('id') id: string) {
+  async eliminarArea(@Args('id', { type: () => ID }) id: string) {
     await this.areaService.remove(id);
     return true;
   }

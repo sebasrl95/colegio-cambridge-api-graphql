@@ -8,16 +8,16 @@ import {
   Delete,
 } from '@nestjs/common';
 import { SalonService } from './salon.service';
-import { CreateSalonDto } from './dto/create-salon.dto';
-import { UpdateSalonDto } from './dto/update-salon.dto';
+import { CreateSalonInput } from './dto/create-salon.input';
+import { UpdateSalonInput } from './dto/update-salon.input';
 
 @Controller('salon')
 export class SalonController {
   constructor(private readonly salonService: SalonService) {}
 
   @Post()
-  create(@Body() createSalonDto: CreateSalonDto) {
-    return this.salonService.create(createSalonDto);
+  create(@Body() createSalonInput: CreateSalonInput) {
+    return this.salonService.create(createSalonInput);
   }
 
   @Get()
@@ -31,7 +31,7 @@ export class SalonController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSalonDto: UpdateSalonDto) {
+  update(@Param('id') id: string, @Body() updateSalonDto: UpdateSalonInput) {
     return this.salonService.update(id, updateSalonDto);
   }
 

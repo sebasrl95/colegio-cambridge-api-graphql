@@ -5,7 +5,7 @@ import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateAreaInput extends PartialType(CreateAreaInput) {
-  @Field()
+  @Field({ nullable: true })
   @IsString()
   nombre?: string;
 }

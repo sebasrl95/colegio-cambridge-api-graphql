@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateEmpleadoDto } from './create-empleado.dto';
+import { CreateEmpleadoInput } from './create-empleado.input';
 import {
   IsString,
   IsMongoId,
@@ -8,27 +8,35 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { TipoEmpleado, TipoProfesor } from 'src/entities/empleado.schema';
+import { InputType, Field } from '@nestjs/graphql';
 
-export class UpdateEmpleadoDto extends PartialType(CreateEmpleadoDto) {
+@InputType()
+export class UpdateEmpleadoInput extends PartialType(CreateEmpleadoInput) {
+  @Field({ nullable: true })
   @IsString()
   nombre?: string;
 
+  @Field({ nullable: true })
   @IsString()
   documento?: string;
 
+  @Field({ nullable: true })
   @IsMongoId()
   @IsNotEmpty()
   area?: string;
 
+  @Field({ nullable: true })
   @IsMongoId()
   @IsNotEmpty()
   oficina?: string;
 
+  @Field({ nullable: true })
   @IsEnum(TipoEmpleado)
   tipoEmpleado?: TipoEmpleado;
 
+  @Field(() => TipoProfesor, { nullable: true })
   @ValidateIf(
-    (empleado: CreateEmpleadoDto) =>
+    (empleado: CreateEmpleadoInput) =>
       empleado.tipoEmpleado === TipoEmpleado.PROFESOR,
   )
   @IsEnum(TipoProfesor)

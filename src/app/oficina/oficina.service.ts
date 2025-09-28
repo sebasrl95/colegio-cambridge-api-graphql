@@ -4,12 +4,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateOficinaDto } from './dto/create-oficina.dto';
+import { CreateOficinaInput } from './dto/create-oficina.input';
 import { Oficina } from 'src/entities/oficina.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateSalonDto } from 'src/app/salon/dto/update-salon.dto';
 import { Area } from 'src/entities/area.schema';
+import { UpdateOficinaInput } from './dto/update-oficina.input';
 
 @Injectable()
 export class OficinaService {
@@ -18,18 +18,18 @@ export class OficinaService {
     @InjectModel(Area.name) private areaModel: Model<Oficina>,
   ) {}
 
-  async create(createOficinaDto: CreateOficinaDto): Promise<Oficina> {
-    const findOficina = await this.findByCode(createOficinaDto.codigo);
+  async create(createOficinaInput: CreateOficinaInput): Promise<Oficina> {
+    const findOficina = await this.findByCode(createOficinaInput.codigo);
     if (findOficina) {
       throw new HttpException(
         'Esta oficina ya se encuentra registrada',
         HttpStatus.CONFLICT,
       );
     }
-    const oficina = new this.oficinaModel(createOficinaDto);
+    const oficina = new this.oficinaModel(createOficinaInput);
     const savedOficina = await oficina.save();
     await this.areaModel.findByIdAndUpdate(
-      createOficinaDto.area,
+      createOficinaInput.area,
       { $push: { oficinas: savedOficina._id } },
       { new: true },
     );
@@ -59,24 +59,27 @@ export class OficinaService {
     return this.oficinaModel.findOne({ codigo }).exec();
   }
 
-  async update(id: string, updateOficinaDto: UpdateSalonDto): Promise<Oficina> {
+  async update(
+    id: string,
+    updateOficinaInput: UpdateOficinaInput,
+  ): Promise<Oficina> {
     const oficina = await this.oficinaModel.findById(id);
     if (!oficina)
       throw new NotFoundException(`Oficina con id ${id} no encontrada`);
 
     if (
-      updateOficinaDto.area &&
-      oficina.area.toString() !== updateOficinaDto.area
+      updateOficinaInput.area &&
+      oficina.area.toString() !== updateOficinaInput.area
     ) {
       await this.areaModel.findByIdAndUpdate(oficina.area, {
         $pull: { oficinas: oficina._id },
       });
-      await this.areaModel.findByIdAndUpdate(updateOficinaDto.area, {
+      await this.areaModel.findByIdAndUpdate(updateOficinaInput.area, {
         $push: { oficinas: oficina._id },
       });
     }
 
-    Object.assign(oficina, updateOficinaDto);
+    Object.assign(oficina, updateOficinaInput);
     return oficina.save();
   }
 

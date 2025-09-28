@@ -8,16 +8,16 @@ import {
   Delete,
 } from '@nestjs/common';
 import { OficinaService } from './oficina.service';
-import { CreateOficinaDto } from './dto/create-oficina.dto';
-import { UpdateOficinaDto } from './dto/update-oficina.dto';
+import { CreateOficinaInput } from './dto/create-oficina.input';
+import { UpdateOficinaInput } from './dto/update-oficina.input';
 
 @Controller('oficina')
 export class OficinaController {
   constructor(private readonly oficinaService: OficinaService) {}
 
   @Post()
-  create(@Body() createOficinaDto: CreateOficinaDto) {
-    return this.oficinaService.create(createOficinaDto);
+  create(@Body() createOficinaInput: CreateOficinaInput) {
+    return this.oficinaService.create(createOficinaInput);
   }
 
   @Get()
@@ -31,8 +31,11 @@ export class OficinaController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOficinaDto: UpdateOficinaDto) {
-    return this.oficinaService.update(id, updateOficinaDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateOficinaInput: UpdateOficinaInput,
+  ) {
+    return this.oficinaService.update(id, updateOficinaInput);
   }
 
   @Delete(':id')

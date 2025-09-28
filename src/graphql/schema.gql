@@ -7,22 +7,108 @@ type AreaType {
   nombre: String!
 }
 
+type OficinaType {
+  id: ID!
+  codigo: String!
+  area: AreaType!
+  empleados: [EmpleadoType!]!
+}
+
+type EmpleadoType {
+  id: ID!
+  nombre: String!
+  documento: String!
+  area: AreaType!
+  oficina: OficinaType!
+  tipoEmpleado: TipoEmpleado!
+  tipoProfesor: TipoProfesor
+}
+
+enum TipoEmpleado {
+  PROFESOR
+  ADMINISTRATIVO
+}
+
+enum TipoProfesor {
+  PLANTA
+  CONTRATISTA
+}
+
+type SalonType {
+  id: ID!
+  codigo: String!
+  area: AreaType!
+}
+
+type Query {
+  areas: [AreaType!]!
+  area(id: ID!): AreaType!
+  areaByName(name: String!): AreaType!
+  empleados: [EmpleadoType!]!
+  empleado(id: ID!): EmpleadoType!
+  oficinas: [OficinaType!]!
+  oficina(id: ID!): OficinaType!
+  salones: [SalonType!]!
+  salon(id: ID!): SalonType!
+}
+
+type Mutation {
+  crearArea(createAreaInput: CreateAreaInput!): AreaType!
+  actualizarArea(id: ID!, updateAreaInput: UpdateAreaInput!): AreaType!
+  eliminarArea(id: ID!): Boolean!
+  createEmpleado(createEmpleadoInput: CreateEmpleadoInput!): EmpleadoType!
+  updateEmpleado(id: ID!, updateEmpleadoInput: UpdateEmpleadoInput!): EmpleadoType!
+  removeEmpleado(id: ID!): EmpleadoType!
+  createOficina(createOficinaInput: CreateOficinaInput!): OficinaType!
+  updateOficina(id: ID!, updateOficinaInput: UpdateOficinaInput!): OficinaType!
+  removeOficina(id: ID!): OficinaType!
+  createSalon(createSalonInput: CreateSalonInput!): SalonType!
+  updateSalon(id: ID!, updateSalonInput: UpdateSalonInput!): SalonType!
+  removeSalon(id: String!): SalonType!
+}
+
 input CreateAreaInput {
   nombre: String!
 }
 
-type Mutation {
-  actualizarArea(data: UpdateAreaInput!, id: String!): AreaType!
-  crearArea(data: CreateAreaInput!): AreaType!
-  eliminarArea(id: String!): Boolean!
-}
-
-type Query {
-  area(id: String!): AreaType!
-  areaByName(name: String!): AreaType!
-  areas: [AreaType!]!
-}
-
 input UpdateAreaInput {
+  nombre: String
+}
+
+input CreateEmpleadoInput {
   nombre: String!
+  documento: String!
+  area: String!
+  oficina: String!
+  tipoEmpleado: String!
+  tipoProfesor: TipoProfesor
+}
+
+input UpdateEmpleadoInput {
+  nombre: String
+  documento: String
+  area: String
+  oficina: String
+  tipoEmpleado: String
+  tipoProfesor: TipoProfesor
+}
+
+input CreateOficinaInput {
+  codigo: String!
+  area: String!
+}
+
+input UpdateOficinaInput {
+  codigo: String
+  area: String
+}
+
+input CreateSalonInput {
+  codigo: String!
+  area: String!
+}
+
+input UpdateSalonInput {
+  codigo: String
+  area: String
 }

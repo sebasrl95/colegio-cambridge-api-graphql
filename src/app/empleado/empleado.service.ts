@@ -4,11 +4,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateEmpleadoDto } from './dto/create-empleado.dto';
+import { CreateEmpleadoInput } from './dto/create-empleado.input';
 import { InjectModel } from '@nestjs/mongoose';
 import { Empleado, TipoEmpleado } from 'src/entities/empleado.schema';
 import { Model } from 'mongoose';
-import { UpdateEmpleadoDto } from './dto/update-empleado.dto';
+import { UpdateEmpleadoInput } from './dto/update-empleado.input';
 import { Area } from 'src/entities/area.schema';
 import { Oficina } from 'src/entities/oficina.schema';
 
@@ -20,46 +20,46 @@ export class EmpleadoService {
     @InjectModel(Oficina.name) private oficinaModel: Model<Oficina>,
   ) {}
 
-  async create(createEmpleadoDto: CreateEmpleadoDto): Promise<Empleado> {
+  async create(createEmpleadoInput: CreateEmpleadoInput): Promise<Empleado> {
     const existing = await this.empleadoModel.findOne({
-      documento: createEmpleadoDto.documento,
+      documento: createEmpleadoInput.documento,
     });
     if (existing) {
       throw new ConflictException(
-        `El documento ${createEmpleadoDto.documento} ya está registrado`,
+        `El documento ${createEmpleadoInput.documento} ya está registrado`,
       );
     }
 
     if (
-      createEmpleadoDto.tipoEmpleado !== TipoEmpleado.PROFESOR &&
-      createEmpleadoDto.tipoEmpleado !== TipoEmpleado.ADMINISTRATIVO
+      createEmpleadoInput.tipoEmpleado !== TipoEmpleado.PROFESOR &&
+      createEmpleadoInput.tipoEmpleado !== TipoEmpleado.ADMINISTRATIVO
     ) {
       throw new BadRequestException('Tipo de empleado no válido');
     }
 
     if (
-      createEmpleadoDto.tipoEmpleado === TipoEmpleado.PROFESOR &&
-      !createEmpleadoDto.tipoProfesor
+      createEmpleadoInput.tipoEmpleado === TipoEmpleado.PROFESOR &&
+      !createEmpleadoInput.tipoProfesor
     ) {
       throw new BadRequestException(
         'Debe especificar el tipoProfesor cuando el empleado es PROFESOR',
       );
     }
 
-    const empleado = new this.empleadoModel(createEmpleadoDto);
+    const empleado = new this.empleadoModel(createEmpleadoInput);
     const savedEmpleado = await empleado.save();
 
-    if (createEmpleadoDto.area) {
+    if (createEmpleadoInput.area) {
       await this.areaModel.findByIdAndUpdate(
-        createEmpleadoDto.area,
+        createEmpleadoInput.area,
         { $push: { empleados: savedEmpleado._id } },
         { new: true },
       );
     }
 
-    if (createEmpleadoDto.oficina) {
+    if (createEmpleadoInput.oficina) {
       await this.oficinaModel.findByIdAndUpdate(
-        createEmpleadoDto.oficina,
+        createEmpleadoInput.oficina,
         { $push: { empleados: savedEmpleado._id } },
         { new: true },
       );
@@ -91,7 +91,7 @@ export class EmpleadoService {
 
   async update(
     id: string,
-    updateEmpleadoDto: UpdateEmpleadoDto,
+    updateEmpleadoInput: UpdateEmpleadoInput,
   ): Promise<Empleado> {
     const empleado = await this.empleadoModel.findById(id);
     if (!empleado)
@@ -99,31 +99,31 @@ export class EmpleadoService {
 
     // Si cambia de área actualizo referencia
     if (
-      updateEmpleadoDto.area &&
-      empleado.area?.toString() !== updateEmpleadoDto.area
+      updateEmpleadoInput.area &&
+      empleado.area?.toString() !== updateEmpleadoInput.area
     ) {
       await this.areaModel.findByIdAndUpdate(empleado.area, {
         $pull: { empleados: empleado._id },
       });
-      await this.areaModel.findByIdAndUpdate(updateEmpleadoDto.area, {
+      await this.areaModel.findByIdAndUpdate(updateEmpleadoInput.area, {
         $push: { empleados: empleado._id },
       });
     }
 
     // Si cambia de oficina actualizo referencia
     if (
-      updateEmpleadoDto.oficina &&
-      empleado.oficina?.toString() !== updateEmpleadoDto.oficina
+      updateEmpleadoInput.oficina &&
+      empleado.oficina?.toString() !== updateEmpleadoInput.oficina
     ) {
       await this.oficinaModel.findByIdAndUpdate(empleado.oficina, {
         $pull: { empleados: empleado._id },
       });
-      await this.oficinaModel.findByIdAndUpdate(updateEmpleadoDto.oficina, {
+      await this.oficinaModel.findByIdAndUpdate(updateEmpleadoInput.oficina, {
         $push: { empleados: empleado._id },
       });
     }
 
-    Object.assign(empleado, updateEmpleadoDto);
+    Object.assign(empleado, updateEmpleadoInput);
     return empleado.save();
   }
 

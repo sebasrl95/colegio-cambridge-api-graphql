@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateSalonDto } from './dto/create-salon.dto';
-import { UpdateSalonDto } from './dto/update-salon.dto';
+import { CreateSalonInput } from './dto/create-salon.input';
+import { UpdateSalonInput } from './dto/update-salon.input';
 import { Salon } from 'src/entities/salon.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,22 +17,22 @@ export class SalonService {
     @InjectModel(Area.name) private areaModel: Model<Area>,
   ) {}
 
-  async create(createSalonDto: CreateSalonDto): Promise<Salon> {
+  async create(createSalonInput: CreateSalonInput): Promise<Salon> {
     const existing = await this.salonModel.findOne({
-      codigo: createSalonDto.codigo,
+      codigo: createSalonInput.codigo,
     });
 
     if (existing) {
       throw new ConflictException(
-        `El salón con código ${createSalonDto.codigo} ya existe`,
+        `El salón con código ${createSalonInput.codigo} ya existe`,
       );
     }
 
-    const salon = new this.salonModel(createSalonDto);
+    const salon = new this.salonModel(createSalonInput);
     const savedSalon = await salon.save();
 
     await this.areaModel.findByIdAndUpdate(
-      createSalonDto.area,
+      createSalonInput.area,
       { $push: { salones: savedSalon._id } },
       { new: true },
     );
@@ -52,20 +52,23 @@ export class SalonService {
     return salon;
   }
 
-  async update(id: string, updateSalonDto: UpdateSalonDto): Promise<Salon> {
+  async update(id: string, updateSalonInput: UpdateSalonInput): Promise<Salon> {
     const salon = await this.salonModel.findById(id);
     if (!salon) throw new NotFoundException(`Salón con id ${id} no encontrado`);
 
-    if (updateSalonDto.area && salon.area.toString() !== updateSalonDto.area) {
+    if (
+      updateSalonInput.area &&
+      salon.area.toString() !== updateSalonInput.area
+    ) {
       await this.areaModel.findByIdAndUpdate(salon.area, {
         $pull: { salones: salon._id },
       });
-      await this.areaModel.findByIdAndUpdate(updateSalonDto.area, {
+      await this.areaModel.findByIdAndUpdate(updateSalonInput.area, {
         $push: { salones: salon._id },
       });
     }
 
-    Object.assign(salon, updateSalonDto);
+    Object.assign(salon, updateSalonInput);
     return salon.save();
   }
 

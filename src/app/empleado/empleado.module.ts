@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Empleado, EmpleadoSchema } from 'src/entities/empleado.schema';
 import { Area, AreaSchema } from 'src/entities/area.schema';
 import { Oficina, OficinaSchema } from 'src/entities/oficina.schema';
+import { EmpleadoResolver } from './empleado.resolver';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { Oficina, OficinaSchema } from 'src/entities/oficina.schema';
     ]),
   ],
   controllers: [EmpleadoController],
-  providers: [EmpleadoService],
+  providers: [EmpleadoService, EmpleadoResolver],
 })
 export class EmpleadoModule {}
