@@ -29,7 +29,7 @@ export class SalonService {
     }
 
     const salon = new this.salonModel(createSalonInput);
-    const savedSalon = await salon.save();
+    const savedSalon = await (await salon.save()).populate('area');
 
     await this.areaModel.findByIdAndUpdate(
       createSalonInput.area,
@@ -69,7 +69,7 @@ export class SalonService {
     }
 
     Object.assign(salon, updateSalonInput);
-    return salon.save();
+    return (await salon.save()).populate('area');
   }
 
   async remove(id: string): Promise<Salon> {

@@ -8,7 +8,7 @@ export class Salon {
   @Prop({ required: true, unique: true })
   codigo: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Area', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Area', required: false })
   area: Types.ObjectId;
 }
 

@@ -8,6 +8,6 @@ export class SalonType {
   @Field()
   codigo: string;
 
-  @Field(() => AreaType)
+  @Field(() => AreaType, { nullable: true })
   area: AreaType;
 }

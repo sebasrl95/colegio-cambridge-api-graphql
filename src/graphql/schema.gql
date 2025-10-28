@@ -37,7 +37,7 @@ enum TipoProfesor {
 type SalonType {
   id: ID!
   codigo: String!
-  area: AreaType!
+  area: AreaType
 }
 
 type Query {
