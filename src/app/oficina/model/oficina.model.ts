@@ -10,9 +10,9 @@ export class OficinaType {
   @Field()
   codigo: string;
 
-  @Field(() => AreaType)
+  @Field(() => AreaType, { nullable: true })
   area: AreaType;
 
-  @Field(() => [EmpleadoType])
+  @Field(() => [EmpleadoType], { nullable: true })
   empleados: EmpleadoType[];
 }

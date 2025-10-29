@@ -10,28 +10,28 @@ type AreaType {
 type OficinaType {
   id: ID!
   codigo: String!
-  area: AreaType!
-  empleados: [EmpleadoType!]!
+  area: AreaType
+  empleados: [EmpleadoType!]
 }
 
 type EmpleadoType {
   id: ID!
   nombre: String!
   documento: String!
-  area: AreaType!
-  oficina: OficinaType!
+  area: AreaType
+  oficina: OficinaType
   tipoEmpleado: TipoEmpleado!
   tipoProfesor: TipoProfesor
 }
 
 enum TipoEmpleado {
-  PROFESOR
-  ADMINISTRATIVO
+  profesor
+  administrativo
 }
 
 enum TipoProfesor {
-  PLANTA
-  CONTRATISTA
+  planta
+  contratista
 }
 
 type SalonType {

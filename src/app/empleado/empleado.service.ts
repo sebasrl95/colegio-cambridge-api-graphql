@@ -31,14 +31,14 @@ export class EmpleadoService {
     }
 
     if (
-      createEmpleadoInput.tipoEmpleado !== TipoEmpleado.PROFESOR &&
-      createEmpleadoInput.tipoEmpleado !== TipoEmpleado.ADMINISTRATIVO
+      createEmpleadoInput.tipoEmpleado !== TipoEmpleado.profesor &&
+      createEmpleadoInput.tipoEmpleado !== TipoEmpleado.administrativo
     ) {
       throw new BadRequestException('Tipo de empleado no válido');
     }
 
     if (
-      createEmpleadoInput.tipoEmpleado === TipoEmpleado.PROFESOR &&
+      createEmpleadoInput.tipoEmpleado === TipoEmpleado.profesor &&
       !createEmpleadoInput.tipoProfesor
     ) {
       throw new BadRequestException(
@@ -47,12 +47,17 @@ export class EmpleadoService {
     }
 
     const empleado = new this.empleadoModel(createEmpleadoInput);
-    const savedEmpleado = await empleado.save();
+    const empleadoDoc = await empleado.save();
+    const savedEmpleado = await this.empleadoModel
+      .findById(empleadoDoc._id)
+      .populate('area')
+      .populate('oficina')
+      .exec();
 
     if (createEmpleadoInput.area) {
       await this.areaModel.findByIdAndUpdate(
         createEmpleadoInput.area,
-        { $push: { empleados: savedEmpleado._id } },
+        { $push: { empleados: empleadoDoc._id } },
         { new: true },
       );
     }
@@ -60,12 +65,12 @@ export class EmpleadoService {
     if (createEmpleadoInput.oficina) {
       await this.oficinaModel.findByIdAndUpdate(
         createEmpleadoInput.oficina,
-        { $push: { empleados: savedEmpleado._id } },
+        { $push: { empleados: empleadoDoc._id } },
         { new: true },
       );
     }
 
-    return savedEmpleado;
+    return savedEmpleado as Empleado;
   }
 
   async findAll(): Promise<Empleado[]> {
@@ -124,7 +129,13 @@ export class EmpleadoService {
     }
 
     Object.assign(empleado, updateEmpleadoInput);
-    return empleado.save();
+    const saved = await empleado.save();
+    const populated = await this.empleadoModel
+      .findById(saved._id)
+      .populate('area')
+      .populate('oficina')
+      .exec();
+    return populated as Empleado;
   }
 
   async remove(id: string): Promise<Empleado> {

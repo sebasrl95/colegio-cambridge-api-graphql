@@ -2,13 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 export enum TipoEmpleado {
-  PROFESOR = 'profesor',
-  ADMINISTRATIVO = 'administrativo',
+  profesor = 'profesor',
+  administrativo = 'administrativo',
 }
 
 export enum TipoProfesor {
-  PLANTA = 'planta',
-  CONTRATISTA = 'contratista',
+  planta = 'planta',
+  contratista = 'contratista',
 }
 
 export type EmpleadoDocument = Empleado & Document;

@@ -37,7 +37,7 @@ export class CreateEmpleadoInput {
   @Field(() => TipoProfesor, { nullable: true })
   @ValidateIf(
     (empleado: CreateEmpleadoInput) =>
-      empleado.tipoEmpleado === TipoEmpleado.PROFESOR,
+      empleado.tipoEmpleado === TipoEmpleado.profesor,
   )
   @IsEnum(TipoProfesor)
   tipoProfesor?: TipoProfesor;

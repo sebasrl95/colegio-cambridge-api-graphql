@@ -17,10 +17,10 @@ export class EmpleadoType {
   @Field()
   documento: string;
 
-  @Field(() => AreaType)
+  @Field(() => AreaType, { nullable: true })
   area: AreaType;
 
-  @Field(() => OficinaType)
+  @Field(() => OficinaType, { nullable: true })
   oficina: OficinaType;
 
   @Field(() => TipoEmpleado)

@@ -34,7 +34,7 @@ export class OficinaService {
       { new: true },
     );
 
-    return savedOficina;
+    return savedOficina.populate('area');
   }
 
   async findAll(): Promise<Oficina[]> {
@@ -80,7 +80,7 @@ export class OficinaService {
     }
 
     Object.assign(oficina, updateOficinaInput);
-    return oficina.save();
+    return (await oficina.save()).populate('area');
   }
 
   async remove(id: string): Promise<Oficina> {
